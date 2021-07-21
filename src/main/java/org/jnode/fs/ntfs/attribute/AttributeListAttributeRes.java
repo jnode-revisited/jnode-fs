@@ -34,12 +34,17 @@ import org.jnode.fs.ntfs.FileRecord;
 final class AttributeListAttributeRes extends NTFSResidentAttribute implements
         AttributeListAttribute {
 
+    private AttributeListBlock block;
+
     /**
      * @param fileRecord
      * @param offset
      */
     public AttributeListAttributeRes(FileRecord fileRecord, int offset) {
         super(fileRecord, offset);
+        byte[] data = new byte[getAttributeLength()];
+        getData(getAttributeOffset(), data, 0, data.length);
+        block = new AttributeListBlock(data, 0, getAttributeLength());
     }
 
     /**
@@ -49,10 +54,7 @@ final class AttributeListAttributeRes extends NTFSResidentAttribute implements
      * @throws IOException if there is an error reading the attribute's data.
      */
     public Iterator<AttributeListEntry> getAllEntries() throws IOException {
-        final byte[] data = new byte[getAttributeLength()];
-        getData(getAttributeOffset(), data, 0, data.length);
-        AttributeListBlock listBlock = new AttributeListBlock(data, 0, getAttributeLength());
-        return listBlock.getAllEntries();
+        return block.getAllEntries();
     }
 
 }

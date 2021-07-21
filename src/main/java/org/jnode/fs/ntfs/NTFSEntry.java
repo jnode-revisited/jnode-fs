@@ -21,7 +21,8 @@
 package org.jnode.fs.ntfs;
 
 import java.io.IOException;
-import java.util.Iterator;
+import java.util.List;
+
 import org.jnode.fs.FSAccessRights;
 import org.jnode.fs.FSDirectory;
 import org.jnode.fs.FSEntry;
@@ -31,7 +32,6 @@ import org.jnode.fs.FSEntryLastChanged;
 import org.jnode.fs.FSFile;
 import org.jnode.fs.FSObject;
 import org.jnode.fs.FileSystem;
-import org.jnode.fs.ntfs.attribute.NTFSAttribute;
 import org.jnode.fs.ntfs.index.IndexEntry;
 
 /**
@@ -121,25 +121,17 @@ public class NTFSEntry implements FSEntry, FSEntryCreated, FSEntryLastChanged, F
             if (parentReferenceNumber != -1) {
                 // The file name can be different for every hard-linked copy of the file. To find the correct name
                 // look for a matching parent MFT index
-                FileNameAttribute fileNameAttribute = null;
-                Iterator<NTFSAttribute> iterator = fileRecord.findAttributesByType(NTFSAttribute.Types.FILE_NAME);
-                while (iterator.hasNext()) {
-                    FileNameAttribute attribute = (FileNameAttribute) iterator.next();
-
+                List<FileNameAttribute> fileNameAttributes = fileRecord.getFileNameAttributes();
+                for (FileNameAttribute attribute : fileNameAttributes) {
                     if (attribute.getParentMftIndex() != parentReferenceNumber) {
                         // File name attribute doesn't match our current parent
                         continue;
                     }
-
-                    // Prefer the win32 namespace
-                    if (fileNameAttribute == null ||
-                        fileNameAttribute.getNameSpace() != FileNameAttribute.NameSpace.WIN32) {
-                        fileNameAttribute = attribute;
+                    if (name == null || attribute.getNameSpace() == FileNameAttribute.NameSpace.WIN32) {
+                        // Prefer the win32 namespace. This may need to be revised if we come across
+                        // entries that are POSIX.
+                        name = attribute.getFileName();
                     }
-                }
-
-                if (fileNameAttribute != null) {
-                    name = fileNameAttribute.getFileName();
                 }
             }
 

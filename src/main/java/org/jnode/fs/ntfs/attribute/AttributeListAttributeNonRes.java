@@ -34,6 +34,8 @@ import org.jnode.fs.ntfs.FileRecord;
 public class AttributeListAttributeNonRes extends NTFSNonResidentAttribute implements
     AttributeListAttribute {
 
+    AttributeListBlock block;
+
     /**
      * Creates a new attribute-list attribute.
      *
@@ -51,14 +53,18 @@ public class AttributeListAttributeNonRes extends NTFSNonResidentAttribute imple
      * @throws IOException if there is an error reading the attribute's data.
      */
     public Iterator<AttributeListEntry> getAllEntries() throws IOException {
-        // Read the actual data from wherever it happens to be located.
-        // TODO: Consider handling multiple data runs separately instead
-        //       of "glueing" them all together like this.
+        if (block == null) {
+            getBlock();
+        }
+        return block.getAllEntries();
+    }
+
+    void getBlock() throws IOException {
         final int nrClusters = getDataRunDecoder().getNumberOfVCNs();
         log.debug(String.format("Allocating %d clusters for non-resident attribute", nrClusters));
         final byte[] data = new byte[nrClusters * getFileRecord().getClusterSize()];
         readVCN(getStartVCN(), data, 0, nrClusters);
-        AttributeListBlock listBlock = new AttributeListBlock(data, 0, getAttributeActualSize());
-        return listBlock.getAllEntries();
+        block = new AttributeListBlock(data, 0, getAttributeActualSize());
+
     }
 }

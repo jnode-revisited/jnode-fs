@@ -132,6 +132,16 @@ public class NTFSStructure {
     }
 
     /**
+     * Read a signed 64-bit integer from a given offset.
+     *
+     * @param offset the offset to read the value from.
+     * @return the 64-bit integer at the given offset.
+     */
+    public final long getUInt64(int offset) {
+        return LittleEndian.getInt64(buffer, this.offset + offset);
+    }
+
+    /**
      * Read an unsigned 32-bit integer from a given offset as a java int.
      *
      * @param offset

@@ -32,7 +32,15 @@ public final class BootRecord extends NTFSStructure {
 
     private final int sectorsPerCluster;
 
+    /**
+     * The logical cluster number of the Master File Table.
+     */
     private final long mftLcn;
+
+    /**
+     * The logical cluster number of the copy of the Master File Table.
+     */
+    private final long mftLcnMirror;
 
     private final int mediaDescriptor;
 
@@ -72,8 +80,9 @@ public final class BootRecord extends NTFSStructure {
         this.sectorsPerCluster = getUInt8(0x0D);
         this.mediaDescriptor = getUInt8(0x15);
         this.sectorsPerTrack = getUInt16(0x18);
-        this.totalSectors = getUInt32(0x28);
-        this.mftLcn = getUInt32(0x30);
+        this.totalSectors = getUInt64(0x28);
+        this.mftLcn = getUInt64(0x30);
+        this.mftLcnMirror = getUInt64(0x38);
         final int clustersPerMFTRecord = getInt8(0x40);
         final int clustersPerIndexRecord = getInt8(0x44);
         this.serialNumber = String.format("%02X%02X-%02X%02X", buffer[0x4b], buffer[0x4a], buffer[0x49], buffer[0x48]);
@@ -108,6 +117,15 @@ public final class BootRecord extends NTFSStructure {
      */
     public long getMftLcn() {
         return mftLcn;
+    }
+
+    /**
+     * Gets the logical cluster number of the MFT mirror.
+     *
+     * @return the logical cluster number of the MFT mirror.
+     */
+    public long getMftLcnMirror() {
+        return mftLcnMirror;
     }
 
     /**
