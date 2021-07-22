@@ -802,18 +802,23 @@ public class FileRecord extends NTFSRecord {
 
                 if (attribute != null) {
                     if (log.isDebugEnabled()) {
-                        log.debug("Attribute: " + attribute.toDebugString());
+                        log.debug("Attribute: {}", attribute.toDebugString());
                     }
 
-                    int offsetToNextOffset = getUInt32AsInt(offset + 0x04);
+                    int offsetToNextOffset = attribute.getSize();
                     if (offsetToNextOffset <= 0) {
                         log.debug("Non-positive offset, preventing infinite loop.  Data on disk may be corrupt.  "
-                                  + "referenceNumber = " + referenceNumber);
+                                  + "referenceNumber = {}", referenceNumber);
                         break;
                     } else {
                         offset += offsetToNextOffset;
                         attributeListBuilder.add(attribute);
                     }
+                } else {
+                    if (isInUse()) {
+                        log.info("attribute at offset {} invalid", offset);
+                    }
+                    break;
                 }
             }
         }
