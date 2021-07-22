@@ -144,6 +144,21 @@ public class LittleEndian {
     }
 
     /**
+     * Gets a 40-bit unsigned integer from the given byte array at the given offset.
+     *
+     * @param src
+     * @param offset
+     */
+    public static long getUInt40(byte[] src, int offset) {
+        final long v0 = src[offset + 0] & 0xFF;
+        final long v1 = src[offset + 1] & 0xFF;
+        final long v2 = src[offset + 2] & 0xFF;
+        final long v3 = src[offset + 3] & 0xFF;
+        final long v4 = src[offset + 4] & 0xFF;
+        return (v4 << 32) | (v3 << 24) | (v2 << 16) | (v1 << 8) | v0;
+    }
+
+    /**
      * Gets a 48-bit unsigned integer from the given byte array at the given offset.
      *
      * @param src
@@ -173,6 +188,42 @@ public class LittleEndian {
         final long v4 = src[offset + 4] & 0xFF;
         final long v5 = src[offset + 5] & 0xFF;
         return ((v5 << 56) | (v4 << 48) | (v3 << 40) | (v2 << 32) | (v1 << 24) | (v0 << 16)) >> 16;
+    }
+
+    /**
+     * Gets a 56-bit signed integer from the given byte array at the given offset.
+     *
+     * @param src
+     * @param offset
+     * @return
+     */
+    public static long getInt56(byte[] src, int offset) {
+        final long v0 = src[offset + 0] & 0xFF;
+        final long v1 = src[offset + 1] & 0xFF;
+        final long v2 = src[offset + 2] & 0xFF;
+        final long v3 = src[offset + 3] & 0xFF;
+        final long v4 = src[offset + 4] & 0xFF;
+        final long v5 = src[offset + 5] & 0xFF;
+        final long v6 = src[offset + 6] & 0xFF;
+        return ((v6 << 56) | (v5 << 48) | (v4 << 40) | (v3 << 32) | (v2 << 24) | (v1 << 16) | (v0 << 8)) >> 8;
+    }
+
+    /**
+     * Gets a 56-bit unsigned integer from the given byte array at the given offset.
+     *
+     * @param src
+     * @param offset
+     * @return
+     */
+    public static long getUInt56(byte[] src, int offset) {
+        final long v0 = src[offset + 0] & 0xFF;
+        final long v1 = src[offset + 1] & 0xFF;
+        final long v2 = src[offset + 2] & 0xFF;
+        final long v3 = src[offset + 3] & 0xFF;
+        final long v4 = src[offset + 4] & 0xFF;
+        final long v5 = src[offset + 5] & 0xFF;
+        final long v6 = src[offset + 6] & 0xFF;
+        return ((v6 << 48) | (v5 << 40) | (v4 << 32) | (v3 << 24) | (v2 << 16) | (v1 << 8) | v0);
     }
 
     /**
@@ -228,6 +279,17 @@ public class LittleEndian {
     }
 
     /**
+     * Sets a 40-bit integer in the given byte array at the given offset.
+     */
+    public static void setInt40(byte[] dst, int offset, long value) {
+        dst[offset + 0] = (byte) (value & 0xFF);
+        dst[offset + 1] = (byte) ((value >>> 8) & 0xFF);
+        dst[offset + 2] = (byte) ((value >>> 16) & 0xFF);
+        dst[offset + 3] = (byte) ((value >>> 24) & 0xFF);
+        dst[offset + 4] = (byte) ((value >>> 32) & 0xFF);
+    }
+
+    /**
      * Sets a 48-bit integer in the given byte array at the given offset.
      */
     public static void setInt48(byte[] dst, int offset, long value) {
@@ -237,6 +299,19 @@ public class LittleEndian {
         dst[offset + 3] = (byte) ((value >>> 24) & 0xFF);
         dst[offset + 4] = (byte) ((value >>> 32) & 0xFF);
         dst[offset + 5] = (byte) ((value >>> 40) & 0xFF);
+    }
+
+    /**
+     * Sets a 56-bit integer in the given byte array at the given offset.
+     */
+    public static void setInt56(byte[] dst, int offset, long value) {
+        dst[offset + 0] = (byte) (value & 0xFF);
+        dst[offset + 1] = (byte) ((value >>> 8) & 0xFF);
+        dst[offset + 2] = (byte) ((value >>> 16) & 0xFF);
+        dst[offset + 3] = (byte) ((value >>> 24) & 0xFF);
+        dst[offset + 4] = (byte) ((value >>> 32) & 0xFF);
+        dst[offset + 5] = (byte) ((value >>> 40) & 0xFF);
+        dst[offset + 6] = (byte) ((value >>> 48) & 0xFF);
     }
 
     /**

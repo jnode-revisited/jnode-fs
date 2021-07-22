@@ -152,6 +152,16 @@ public class NTFSStructure {
     }
 
     /**
+     * Read an unsigned 40-bit integer from a given offset.
+     *
+     * @param offset
+     * @return
+     */
+    public final long getUInt40(int offset) {
+        return LittleEndian.getUInt40(buffer, this.offset + offset);
+    }
+
+    /**
      * Read an unsigned 48-bit integer from a given offset.
      *
      * @param offset
@@ -159,6 +169,16 @@ public class NTFSStructure {
      */
     public final long getUInt48(int offset) {
         return LittleEndian.getUInt48(buffer, this.offset + offset);
+    }
+
+    /**
+     * Read an unsigned 56-bit integer from a given offset.
+     *
+     * @param offset
+     * @return
+     */
+    public final long getUInt56(int offset) {
+        return LittleEndian.getUInt56(buffer, this.offset + offset);
     }
 
     /**
@@ -219,6 +239,16 @@ public class NTFSStructure {
      */
     public final long getInt48(int offset) {
         return LittleEndian.getInt48(buffer, this.offset + offset);
+    }
+
+    /**
+     * Read a signed 56-bit integer from a given offset.
+     *
+     * @param offset
+     * @return
+     */
+    public final long getInt56(int offset) {
+        return LittleEndian.getInt56(buffer, this.offset + offset);
     }
 
     /**
