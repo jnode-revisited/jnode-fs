@@ -2,6 +2,14 @@
 File system implementations based on the code of the JNode operating system.
 JNode-fs contains the Filesystems and the various block device drivers which is a subset of the bigger https://github.com/tmyroadctfig/jnode project.
 
+---
+
+Forked from [https://github.com/Nuix/jnode-fs](https://github.com/Nuix/jnode-fs)
+
+Seems to be more recent than other forks
+* https://github.com/jnode-revisited/nuix-java-fs (https://github.com/Nuix/java-fs)
+* https://github.com/jnode-revisited/magnusja-java-fs https://github.com/magnusja/java-fs)
+
 ```
 /*
  * Copyright (C) 2003-2016 JNode.org
