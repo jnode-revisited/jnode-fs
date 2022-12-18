@@ -1,8 +1,10 @@
 package org.jnode.fs.xfs;
 
-import org.jnode.util.BigEndian;
-
 import java.util.Locale;
+import java.util.UUID;
+
+import lombok.Getter;
+import org.jnode.util.BigEndian;
 
 /**
  * An object in a XFS file system.
@@ -12,15 +14,16 @@ import java.util.Locale;
  * @author Julio Parra
  */
 public class XfsObject {
-
     /**
      * The data for this record.
      */
+    @Getter
     private byte[] data;
 
     /**
      * The offset into the data.
      */
+    @Getter
     private int offset;
 
     /**
@@ -70,24 +73,6 @@ public class XfsObject {
     }
 
     /**
-     * Gets the data.
-     *
-     * @return the data.
-     */
-    public byte[] getData() {
-        return data;
-    }
-
-    /**
-     * Gets the offset for this object into the data.
-     *
-     * @return the offset.
-     */
-    public int getOffset() {
-        return offset;
-    }
-
-    /**
      * Gets a uint-8.
      *
      * @param relativeOffset the offset to read from.
@@ -98,6 +83,17 @@ public class XfsObject {
     }
 
     /**
+     * Gets a uint-8, and increment offset by 1.
+     *
+     * @return the value.
+     */
+    public int readUInt8() {
+        int value = BigEndian.getUInt8(data, offset);
+        offset += 1;
+        return value;
+    }
+
+    /**
      * Gets a uint-16.
      *
      * @param relativeOffset the offset to read from.
@@ -105,6 +101,17 @@ public class XfsObject {
      */
     public int getUInt16(int relativeOffset) {
         return BigEndian.getUInt16(data, offset + relativeOffset);
+    }
+
+    /**
+     * Gets a uint-16, and increment offset by 2.
+     *
+     * @return the value.
+     */
+    public int readUInt16() {
+        int value = BigEndian.getUInt16(data, offset);
+        offset += 2;
+        return value;
     }
 
     /**
@@ -128,6 +135,17 @@ public class XfsObject {
     }
 
     /**
+     * Gets a uint-32, and increment offset by 4.
+     *
+     * @return the value.
+     */
+    public long readUInt32() {
+        long value = BigEndian.getUInt32(data, offset);
+        offset += 4;
+        return value;
+    }
+
+    /**
      * Gets a uint-48.
      *
      * @param relativeOffset the offset to read from.
@@ -148,17 +166,36 @@ public class XfsObject {
     }
 
     /**
-     * Gets the UUID value.
+     * Gets an int-64, and increment offset by 8.
      *
-     * @param offset the offset to read from.
+     * @return the value.
+     */
+    public long readInt64() {
+        long value = BigEndian.getInt64(data, offset);
+        offset += 8;
+        return value;
+    }
+
+    /**
+     * Skips bytes. NOTE: no bounds checking against {@link #data}.
+     *
+     * @param bytes the number of bytes to skip.
+     * @return the new offset.
+     */
+    protected long skipBytes(long bytes) {
+        offset += bytes;
+        return offset;
+    }
+
+    /**
+     * Gets the UUID value, and increment the offset by 16.
+     *
      * @return the uuid value.
      */
-    protected String readUuid(int offset) {
-        return Long.toHexString(getUInt32(offset))
-                + "-" + Long.toHexString(getUInt16(offset + 4))
-                + "-" + Long.toHexString(getUInt16(offset + 6))
-                + "-" + Long.toHexString(getUInt16(offset + 8))
-                + "-" + Long.toHexString(getUInt16(offset + 10));
+    protected UUID readUuid() {
+        long upperValue = readInt64();
+        long lowerValue = readInt64();
+        return new UUID(upperValue, lowerValue);
     }
 
     /**
@@ -171,7 +208,7 @@ public class XfsObject {
         final String hexString = Long.toHexString(signature);
         try {
             return hexToAscii(hexString);
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             return hexString;
         }
     }
